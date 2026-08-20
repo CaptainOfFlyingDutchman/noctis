@@ -85,6 +85,8 @@ node tools/generate.mjs
 
 Or `./gradlew vendorPalette generateThemes`. Generated files live in `src/main/resources/themes/` and `src/main/resources/META-INF/plugin.xml`. Do not hand-edit those; change `tools/generate.mjs` or the palette snapshot instead.
 
+## [Screenshots](images/screenshots.md)
+
 ## Publishing
 
 See [docs/publishing.md](docs/publishing.md) for JetBrains Marketplace upload, signing, and screenshots.
