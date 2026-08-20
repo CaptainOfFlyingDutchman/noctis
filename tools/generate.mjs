@@ -7,7 +7,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const THEME_DIR = "src/main/resources/themes";
 const PLUGIN_XML_PATH = "src/main/resources/META-INF/plugin.xml";
 const PLUGIN_ID = "com.manvendrask.noctis.jetbrains";
-const PLUGIN_NAME = "Noctis IDE Themes";
+const PLUGIN_NAME = "Noctis";
 const PLUGIN_VENDOR = "Manvendra Singh";
 const PLUGIN_VENDOR_URL = "https://github.com/CaptainOfFlyingDutchman";
 const PLUGIN_VERSION = "1.0.0";
@@ -200,12 +200,12 @@ function buildThemeJson(themeSource, { classic }) {
   const controlFocusBackground = ui.listFocus;
   const controlHoverBackground = ui.listHover;
   const toolWindowSelectionBackground = ui.listSelection;
-  const displayName = classic ? `${name} Classic` : name;
+  const displayName = classic ? `${name} Classic` : `${name} Islands`;
 
   const theme = {
     name: displayName,
     dark,
-    author: "Liviu Schera / Noctis IDE Themes port",
+    author: "Liviu Schera / Noctis port",
     editorScheme: schemeReference(themeSource),
     parentTheme: classic
       ? dark
@@ -730,7 +730,7 @@ function buildEditorSchemeXml(themeSource) {
     `<?xml version="1.0" encoding="UTF-8"?>`,
     `<scheme name="${xmlEscape(name)}" version="142" parent_scheme="${parent}">`,
     "  <metaInfo>",
-    `    <property name="originalScheme">Noctis IDE Themes generator from ${xmlEscape(upstream.repository)}</property>`,
+    `    <property name="originalScheme">Noctis generator from ${xmlEscape(upstream.repository)}</property>`,
     `    <property name="upstreamVersion">${xmlEscape(upstream.version)}</property>`,
     `    <property name="upstreamPath">${xmlEscape(themeSource.upstreamPath)}</property>`,
     "  </metaInfo>",
@@ -763,8 +763,8 @@ function buildPluginXml(themes) {
   <vendor url="${xmlEscape(PLUGIN_VENDOR_URL)}">${xmlEscape(PLUGIN_VENDOR)}</vendor>
   <depends>com.intellij.modules.platform</depends>
   <description><![CDATA[
-    <p><b>Noctis IDE Themes</b> ports the Noctis VS Code collection to IntelliJ-based IDEs
-    with coordinated editor schemes and IDE UI themes.</p>
+    <p><b>Noctis</b> is a collection of light and dark themes with a well-balanced blend of
+    warm and cold medium-contrast colors, ported from the VS Code theme of the same name.</p>
     <p>Each of the 11 upstream palettes is available as an <b>Islands</b> theme (2025.3 default look)
     and a <b>Classic</b> theme (pre-Islands chrome).</p>
     <ul>

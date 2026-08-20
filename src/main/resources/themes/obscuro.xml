@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scheme name="Noctis Obscuro" version="142" parent_scheme="Darcula">
   <metaInfo>
-    <property name="originalScheme">Noctis IDE Themes generator from https://github.com/liviuschera/noctis</property>
+    <property name="originalScheme">Noctis generator from https://github.com/liviuschera/noctis</property>
     <property name="upstreamVersion">10.43.3</property>
     <property name="upstreamPath">./themes/obscuro.json</property>
   </metaInfo>

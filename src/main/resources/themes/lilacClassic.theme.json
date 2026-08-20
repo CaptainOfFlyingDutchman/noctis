@@ -1,7 +1,7 @@
 {
   "name": "Noctis Lilac Classic",
   "dark": false,
-  "author": "Liviu Schera / Noctis IDE Themes port",
+  "author": "Liviu Schera / Noctis port",
   "editorScheme": "/themes/lilac.xml",
   "parentTheme": "ExperimentalLight",
   "colors": {

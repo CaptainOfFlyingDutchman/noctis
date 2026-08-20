@@ -1,7 +1,7 @@
 {
-  "name": "Noctis Hibernus",
+  "name": "Noctis Hibernus Islands",
   "dark": false,
-  "author": "Liviu Schera / Noctis IDE Themes port",
+  "author": "Liviu Schera / Noctis port",
   "editorScheme": "/themes/hibernus.xml",
   "parentTheme": "Islands Light",
   "colors": {

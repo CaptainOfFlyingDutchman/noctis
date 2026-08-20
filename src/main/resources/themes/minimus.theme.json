@@ -1,7 +1,7 @@
 {
-  "name": "Noctis Minimus",
+  "name": "Noctis Minimus Islands",
   "dark": true,
-  "author": "Liviu Schera / Noctis IDE Themes port",
+  "author": "Liviu Schera / Noctis port",
   "editorScheme": "/themes/minimus.xml",
   "parentTheme": "Islands Dark",
   "colors": {

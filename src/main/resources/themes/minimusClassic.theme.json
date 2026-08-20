@@ -1,7 +1,7 @@
 {
   "name": "Noctis Minimus Classic",
   "dark": true,
-  "author": "Liviu Schera / Noctis IDE Themes port",
+  "author": "Liviu Schera / Noctis port",
   "editorScheme": "/themes/minimus.xml",
   "parentTheme": "ExperimentalDark",
   "colors": {

@@ -1,7 +1,7 @@
 {
-  "name": "Noctis Uva",
+  "name": "Noctis Uva Islands",
   "dark": true,
-  "author": "Liviu Schera / Noctis IDE Themes port",
+  "author": "Liviu Schera / Noctis port",
   "editorScheme": "/themes/uva.xml",
   "parentTheme": "Islands Dark",
   "colors": {

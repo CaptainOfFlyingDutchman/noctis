@@ -1,7 +1,7 @@
 {
   "name": "Noctis Azureus Classic",
   "dark": true,
-  "author": "Liviu Schera / Noctis IDE Themes port",
+  "author": "Liviu Schera / Noctis port",
   "editorScheme": "/themes/azureus.xml",
   "parentTheme": "ExperimentalDark",
   "colors": {

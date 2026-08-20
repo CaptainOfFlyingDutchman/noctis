@@ -1,7 +1,7 @@
 {
-  "name": "Noctis Lux",
+  "name": "Noctis Lux Islands",
   "dark": false,
-  "author": "Liviu Schera / Noctis IDE Themes port",
+  "author": "Liviu Schera / Noctis port",
   "editorScheme": "/themes/lux.xml",
   "parentTheme": "Islands Light",
   "colors": {

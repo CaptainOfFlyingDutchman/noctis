@@ -1,7 +1,7 @@
 {
   "name": "Noctis Lux Classic",
   "dark": false,
-  "author": "Liviu Schera / Noctis IDE Themes port",
+  "author": "Liviu Schera / Noctis port",
   "editorScheme": "/themes/lux.xml",
   "parentTheme": "ExperimentalLight",
   "colors": {

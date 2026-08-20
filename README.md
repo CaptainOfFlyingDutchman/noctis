@@ -1,11 +1,11 @@
-# Noctis IDE Themes
+# Noctis
 
 <p align="center"><img width="120" src="images/logo.png" alt="Noctis logo" /></p>
 
 Unofficial IntelliJ Platform port of [Noctis](https://github.com/liviuschera/noctis) by Liviu Schera — a collection of light and dark themes with a well-balanced blend of warm and cold **medium contrast** colors.
 
 Plugin ID: `com.manvendrask.noctis.jetbrains`  
-Display name: **Noctis IDE Themes** (Marketplace rejects titles that contain the word “JetBrains”).  
+Display name: **Noctis**  
 Compatible with **WebStorm, IntelliJ IDEA, PyCharm**, and other IntelliJ-based IDEs **2025.3+**.
 
 This is a stand-alone theme plugin. It is not affiliated with the original VS Code extension.
@@ -16,17 +16,17 @@ Each of the 11 upstream palettes is registered twice:
 
 | Islands (2025.3 look) | Classic (pre-Islands chrome) |
 | --- | --- |
-| Noctis | Noctis Classic |
-| Noctis Azureus | Noctis Azureus Classic |
-| Noctis Bordo | Noctis Bordo Classic |
-| Noctis Obscuro | Noctis Obscuro Classic |
-| Noctis Sereno | Noctis Sereno Classic |
-| Noctis Uva | Noctis Uva Classic |
-| Noctis Viola | Noctis Viola Classic |
-| Noctis Minimus | Noctis Minimus Classic |
-| Noctis Lux | Noctis Lux Classic |
-| Noctis Hibernus | Noctis Hibernus Classic |
-| Noctis Lilac | Noctis Lilac Classic |
+| Noctis Islands | Noctis Classic |
+| Noctis Azureus Islands | Noctis Azureus Classic |
+| Noctis Bordo Islands | Noctis Bordo Classic |
+| Noctis Obscuro Islands | Noctis Obscuro Classic |
+| Noctis Sereno Islands | Noctis Sereno Classic |
+| Noctis Uva Islands | Noctis Uva Classic |
+| Noctis Viola Islands | Noctis Viola Classic |
+| Noctis Minimus Islands | Noctis Minimus Classic |
+| Noctis Lux Islands | Noctis Lux Classic |
+| Noctis Hibernus Islands | Noctis Hibernus Classic |
+| Noctis Lilac Islands | Noctis Lilac Classic |
 
 Islands variants inherit `Islands Dark` / `Islands Light`. Classic variants inherit `ExperimentalDark` / `ExperimentalLight`.
 

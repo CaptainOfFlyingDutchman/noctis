@@ -2,7 +2,7 @@
   "name": "noctis-jetbrains",
   "private": true,
   "type": "module",
-  "description": "Generators for the Noctis IDE Themes plugin",
+  "description": "Generators for the Noctis theme plugin",
   "scripts": {
     "vendor": "node tools/extract-palette.mjs",
     "generate": "node tools/generate.mjs",

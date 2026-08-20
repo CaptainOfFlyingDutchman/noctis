@@ -1,7 +1,7 @@
 {
-  "name": "Noctis Bordo",
+  "name": "Noctis Bordo Islands",
   "dark": true,
-  "author": "Liviu Schera / Noctis IDE Themes port",
+  "author": "Liviu Schera / Noctis port",
   "editorScheme": "/themes/bordo.xml",
   "parentTheme": "Islands Dark",
   "colors": {

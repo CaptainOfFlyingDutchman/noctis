@@ -1,7 +1,7 @@
 {
-  "name": "Noctis Obscuro",
+  "name": "Noctis Obscuro Islands",
   "dark": true,
-  "author": "Liviu Schera / Noctis IDE Themes port",
+  "author": "Liviu Schera / Noctis port",
   "editorScheme": "/themes/obscuro.xml",
   "parentTheme": "Islands Dark",
   "colors": {

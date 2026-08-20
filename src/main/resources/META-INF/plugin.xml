@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <idea-plugin>
   <id>com.manvendrask.noctis.jetbrains</id>
-  <name>Noctis IDE Themes</name>
+  <name>Noctis</name>
   <vendor url="https://github.com/CaptainOfFlyingDutchman">Manvendra Singh</vendor>
   <depends>com.intellij.modules.platform</depends>
   <description><![CDATA[
-    <p><b>Noctis IDE Themes</b> ports the Noctis VS Code collection to IntelliJ-based IDEs
-    with coordinated editor schemes and IDE UI themes.</p>
+    <p><b>Noctis</b> is a collection of light and dark themes with a well-balanced blend of
+    warm and cold medium-contrast colors, ported from the VS Code theme of the same name.</p>
     <p>Each of the 11 upstream palettes is available as an <b>Islands</b> theme (2025.3 default look)
     and a <b>Classic</b> theme (pre-Islands chrome).</p>
     <ul>

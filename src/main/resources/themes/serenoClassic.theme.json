@@ -1,7 +1,7 @@
 {
   "name": "Noctis Sereno Classic",
   "dark": true,
-  "author": "Liviu Schera / Noctis IDE Themes port",
+  "author": "Liviu Schera / Noctis port",
   "editorScheme": "/themes/sereno.xml",
   "parentTheme": "ExperimentalDark",
   "colors": {

@@ -1,4 +1,4 @@
-# Noctis IDE Themes — visual QA
+# Noctis — visual QA
 
 Use this list in the `runIde` sandbox and again after **Install Plugin from Disk** in licensed WebStorm.
 
@@ -10,7 +10,7 @@ Use this list in the `runIde` sandbox and again after **Install Plugin from Disk
 
 ## Per-theme pass
 
-Repeat for **Noctis**, **Noctis Classic**, **Noctis Lux**, **Noctis Lux Classic**:
+Repeat for **Noctis Islands**, **Noctis Classic**, **Noctis Lux Islands**, **Noctis Lux Classic**:
 
 - [ ] Editor background and caret match the VS Code palette (not leftover Darcula/Light)
 - [ ] Keywords, strings, numbers, functions, comments in `preview.ts` / `preview.js`

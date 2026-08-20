@@ -1,4 +1,4 @@
-# Publishing Noctis IDE Themes
+# Publishing Noctis
 
 Theme plugins are uploaded to [JetBrains Marketplace](https://plugins.jetbrains.com). The first listing must be created in the browser; later versions can use Gradle.
 
@@ -6,15 +6,15 @@ Theme plugins are uploaded to [JetBrains Marketplace](https://plugins.jetbrains.
 
 1. Run `./gradlew buildPlugin` and install the ZIP from disk in your licensed WebStorm.
 2. Capture Marketplace screenshots **in WebStorm** (do not reuse the VS Code gallery images). Suggested set:
-   - Noctis (Islands) with `samples/preview.ts` open
-   - Noctis Azureus
-   - Noctis Bordo
-   - Noctis Lux (light)
+   - Noctis Islands with `samples/preview.ts` open
+   - Noctis Azureus Islands
+   - Noctis Bordo Islands
+   - Noctis Lux Islands (light)
    - One Classic variant so reviewers see both looks
 3. Put PNG/JPEG files in [`docs/screenshots/`](screenshots/).
 4. Confirm plugin identity:
    - ID: `com.manvendrask.noctis.jetbrains` (immutable after the first upload)
-   - Name: **Noctis IDE Themes** (Marketplace forbids the word “JetBrains” in plugin titles)
+   - Name: **Noctis**
    - License: MIT
    - `since-build`: `253` (2025.3)
 
