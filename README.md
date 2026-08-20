@@ -1,6 +1,7 @@
 # Noctis
 
 <p align="center"><img width="120" src="images/logo.png" alt="Noctis logo" /></p>
+<p align="center"><img width="400" src="images/noctisLogo.png" /></p>
 
 Unofficial IntelliJ Platform port of [Noctis](https://github.com/liviuschera/noctis) by Liviu Schera — a collection of light and dark themes with a well-balanced blend of warm and cold **medium contrast** colors.
 
