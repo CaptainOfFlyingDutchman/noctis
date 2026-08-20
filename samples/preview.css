@@ -1,0 +1,19 @@
+:root {
+  --bg: #052529;
+  --accent: #40d4e7;
+  --keyword: #df769b;
+}
+
+body {
+  background: var(--bg);
+  color: #b2cacd;
+  font-family: system-ui, sans-serif;
+}
+
+h1 {
+  color: var(--accent);
+}
+
+button:hover {
+  background: #0cc;
+}

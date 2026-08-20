@@ -1,0 +1,6 @@
+{
+  "name": "Noctis IDE Themes",
+  "variants": 11,
+  "looks": ["Islands", "Classic"],
+  "dark": true
+}

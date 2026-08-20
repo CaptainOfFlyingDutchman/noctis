@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<idea-plugin>
+  <id>com.manvendrask.noctis.jetbrains</id>
+  <name>Noctis IDE Themes</name>
+  <vendor url="https://github.com/CaptainOfFlyingDutchman">Manvendra Singh</vendor>
+  <depends>com.intellij.modules.platform</depends>
+  <description><![CDATA[
+    <p><b>Noctis IDE Themes</b> ports the Noctis VS Code collection to IntelliJ-based IDEs
+    with coordinated editor schemes and IDE UI themes.</p>
+    <p>Each of the 11 upstream palettes is available as an <b>Islands</b> theme (2025.3 default look)
+    and a <b>Classic</b> theme (pre-Islands chrome).</p>
+    <ul>
+      <li>Dark: Noctis, Azureus, Bordo, Obscuro, Sereno, Uva, Viola, Minimus</li>
+      <li>Light: Lux, Hibernus, Lilac</li>
+    </ul>
+    <p>Ported from <a href="https://github.com/liviuschera/noctis">liviuschera/noctis</a> (MIT)
+    by Liviu Schera. Unofficial port — not affiliated with the original author.</p>
+  ]]></description>
+  <change-notes><![CDATA[
+    <ul>
+      <li>Initial release: 11 Noctis palettes as Islands and Classic UI themes.</li>
+      <li>Shared editor color schemes covering JS/TS, HTML/CSS, JSON, Markdown, diagnostics, diff, and terminal.</li>
+    </ul>
+  ]]></change-notes>
+  <extensions defaultExtensionNs="com.intellij">
+    <themeProvider id="com.manvendrask.noctis.jetbrains.lux" path="/themes/lux.theme.json" />
+    <themeProvider id="com.manvendrask.noctis.jetbrains.lux.classic" path="/themes/luxClassic.theme.json" />
+    <themeProvider id="com.manvendrask.noctis.jetbrains.hibernus" path="/themes/hibernus.theme.json" />
+    <themeProvider id="com.manvendrask.noctis.jetbrains.hibernus.classic" path="/themes/hibernusClassic.theme.json" />
+    <themeProvider id="com.manvendrask.noctis.jetbrains.lilac" path="/themes/lilac.theme.json" />
+    <themeProvider id="com.manvendrask.noctis.jetbrains.lilac.classic" path="/themes/lilacClassic.theme.json" />
+    <themeProvider id="com.manvendrask.noctis.jetbrains.noctis" path="/themes/noctis.theme.json" />
+    <themeProvider id="com.manvendrask.noctis.jetbrains.noctis.classic" path="/themes/noctisClassic.theme.json" />
+    <themeProvider id="com.manvendrask.noctis.jetbrains.azureus" path="/themes/azureus.theme.json" />
+    <themeProvider id="com.manvendrask.noctis.jetbrains.azureus.classic" path="/themes/azureusClassic.theme.json" />
+    <themeProvider id="com.manvendrask.noctis.jetbrains.bordo" path="/themes/bordo.theme.json" />
+    <themeProvider id="com.manvendrask.noctis.jetbrains.bordo.classic" path="/themes/bordoClassic.theme.json" />
+    <themeProvider id="com.manvendrask.noctis.jetbrains.obscuro" path="/themes/obscuro.theme.json" />
+    <themeProvider id="com.manvendrask.noctis.jetbrains.obscuro.classic" path="/themes/obscuroClassic.theme.json" />
+    <themeProvider id="com.manvendrask.noctis.jetbrains.sereno" path="/themes/sereno.theme.json" />
+    <themeProvider id="com.manvendrask.noctis.jetbrains.sereno.classic" path="/themes/serenoClassic.theme.json" />
+    <themeProvider id="com.manvendrask.noctis.jetbrains.uva" path="/themes/uva.theme.json" />
+    <themeProvider id="com.manvendrask.noctis.jetbrains.uva.classic" path="/themes/uvaClassic.theme.json" />
+    <themeProvider id="com.manvendrask.noctis.jetbrains.viola" path="/themes/viola.theme.json" />
+    <themeProvider id="com.manvendrask.noctis.jetbrains.viola.classic" path="/themes/violaClassic.theme.json" />
+    <themeProvider id="com.manvendrask.noctis.jetbrains.minimus" path="/themes/minimus.theme.json" />
+    <themeProvider id="com.manvendrask.noctis.jetbrains.minimus.classic" path="/themes/minimusClassic.theme.json" />
+  </extensions>
+</idea-plugin>
