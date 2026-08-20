@@ -17,11 +17,9 @@
   },
   "ui": {
     "*": {
-      "background": "noctisBackground",
       "foreground": "#cbbec2",
       "selectionBackground": "#5c2e3e99",
       "selectionForeground": "#edebff",
-      "inactiveBackground": "noctisSidebar",
       "disabledForeground": "#bbaab0",
       "infoForeground": "#bb778f"
     },
@@ -240,7 +238,6 @@
     "StatusBar.Widget.HoverBackground": "#533641",
     "StatusBar.Widget.borderColor": "#1f191b",
     "StatusBar.Widget.foreground": "#f18eb0",
-    "StatusBar.background": "#322a2d",
     "StatusBar.borderColor": "#1f191b00",
     "StatusBar.foreground": "#f18eb0",
     "TabbedPane.underlineColor": "#f18eb0",
@@ -265,7 +262,6 @@
     "TextField.foreground": "#cbbec2",
     "TextField.inactiveBackground": "#413036",
     "TextField.inactiveForeground": "#bbaab0",
-    "TitlePane.inactiveBackground": "#2c2528",
     "TitlePane.infoForeground": "#bbaab0",
     "ToolTip.background": "#413036",
     "ToolTip.foreground": "#cbbec2",
@@ -281,7 +277,6 @@
     "ToolWindow.HeaderTab.selectedBackground": "#413036",
     "ToolWindow.HeaderTab.selectedForeground": "#f18eb0",
     "ToolWindow.HeaderTab.underlineColor": "#f18eb0",
-    "ToolWindow.Stripe.background": "#322a2d",
     "ToolWindow.Stripe.hoverBackground": "#533641",
     "ToolWindow.StripeButton.hoverBackground": "#533641",
     "ToolWindow.StripeButton.selectedBackground": "#5c2e3e99",

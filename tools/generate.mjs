@@ -47,25 +47,6 @@ function toHex({ r, g, b, a }) {
   return `#${ch(r)}${ch(g)}${ch(b)}${a ?? ""}`;
 }
 
-function mix(color, other, amount) {
-  const a = parseHex(color);
-  const b = parseHex(other);
-  return toHex({
-    r: a.r + (b.r - a.r) * amount,
-    g: a.g + (b.g - a.g) * amount,
-    b: a.b + (b.b - a.b) * amount,
-    a: a.a
-  });
-}
-
-function lighten(color, amount) {
-  return mix(color, "#ffffff", amount);
-}
-
-function darken(color, amount) {
-  return mix(color, "#000000", amount);
-}
-
 function withAlpha(color, alphaHex) {
   const { r, g, b } = parseHex(color);
   return toHex({ r, g, b, a: alphaHex });
@@ -170,13 +151,12 @@ function scrollBarKeys(ui, editor) {
 }
 
 function islandsKeys(themeSource) {
-  const { dark, workbench } = themeSource;
+  const { workbench } = themeSource;
   const { editor, ui } = workbench;
   const toolWindowBg = editor.background;
-  const mainWindowBg = dark ? lighten(editor.background, 0.12) : darken(editor.background, 0.08);
 
   return {
-    "MainWindow.background": mainWindowBg,
+    "ToolWindow.background": toolWindowBg,
     "ToolWindow.background": toolWindowBg,
     "ToolWindow.Header.background": ui.sideBarHeader,
     "ToolWindow.Header.inactiveBackground": ui.sideBarBackground,
@@ -490,6 +470,22 @@ function buildThemeJson(themeSource, { classic }) {
       }
     }
   };
+
+  if (!classic) {
+    // 2026.2 paints the Islands title wash by intercepting named colors
+    // MainWindow/MainToolbar/StatusBar/Stripe. A solid hex (or "*" background)
+    // replaces those names and the gradient never runs. Island gutters then
+    // come from the parent Islands Dark/Light MainWindow color.
+    delete theme.ui["*"].background;
+    delete theme.ui["*"].inactiveBackground;
+    delete theme.ui["MainWindow.background"];
+    delete theme.ui["MainToolbar.background"];
+    delete theme.ui["MainToolbar.inactiveBackground"];
+    delete theme.ui["TitlePane.background"];
+    delete theme.ui["TitlePane.inactiveBackground"];
+    delete theme.ui["StatusBar.background"];
+    delete theme.ui["ToolWindow.Stripe.background"];
+  }
 
   return `${JSON.stringify(theme, null, 2)}\n`;
 }
