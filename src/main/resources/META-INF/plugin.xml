@@ -18,8 +18,7 @@
   ]]></description>
   <change-notes><![CDATA[
     <ul>
-      <li>Initial release: 11 Noctis palettes as Islands and Classic UI themes.</li>
-      <li>Shared editor color schemes covering JS/TS, HTML/CSS, JSON, Markdown, diagnostics, diff, and terminal.</li>
+      <li>Fix the SVG logo for the Plugin Marketplace listing.</li>
     </ul>
   ]]></change-notes>
   <extensions defaultExtensionNs="com.intellij">

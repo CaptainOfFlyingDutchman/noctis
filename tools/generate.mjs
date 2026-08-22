@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { noctisThemes, upstream } from "./palette.mjs";
@@ -10,7 +10,6 @@ const PLUGIN_ID = "com.manvendrask.noctis.jetbrains";
 const PLUGIN_NAME = "Noctis";
 const PLUGIN_VENDOR = "Manvendra Singh";
 const PLUGIN_VENDOR_URL = "https://github.com/CaptainOfFlyingDutchman";
-const PLUGIN_VERSION = "1.0.0";
 
 const EFFECT_TYPE_CODES = {
   BOXED: 0,
@@ -23,6 +22,59 @@ const EFFECT_TYPE_CODES = {
 
 function stripHash(color) {
   return String(color).replace(/^#/, "").toLowerCase();
+}
+
+function gradleProperty(contents, key) {
+  const match = contents.match(new RegExp(`^${key}\\s*=\\s*(.+)$`, "m"));
+  
+  
+  if (!match) {
+    throw new Error(`missing ${key} in gradle.properties`);
+  }
+  
+  return match[1].trim();
+}
+
+function changelogSection(markdown, version) {
+  const escaped = version.replaceAll(".", "\\.");
+  const heading = new RegExp(`^##\\s+\\[?${escaped}\\]?\\b.*$`, "m");
+  const match = heading.exec(markdown);
+  
+  if (!match) {
+    return null;
+  }
+  
+  const start = match.index + match[0].length;
+  const rest = markdown.slice(start);
+  const next = rest.search(/^##\s+/m);
+  
+  return rest.slice(0, next === -1 ? undefined : next).trim();
+}
+
+function inlineMarkdown(text) {
+  return xmlEscape(text)
+    .replaceAll(/\*\*(.+?)\*\*/g, "<b>$1</b>")
+    .replaceAll(/`(.+?)`/g, "<code>$1</code>");
+}
+
+function changelogHtml(markdown, version) {
+  const section = changelogSection(markdown, version);
+  
+  if (!section) {
+    throw new Error(`CHANGELOG.md has no ## [${version}] section`);
+  }
+  
+  const items = [...section.matchAll(/^[-*]\s+(.+)$/gm)].map((item) => item[1].trim());
+  
+  if (items.length === 0) {
+    throw new Error(`CHANGELOG.md section ${version} has no list items`);
+  }
+  
+  return [
+    "    <ul>",
+    ...items.map((item) => `      <li>${inlineMarkdown(item)}</li>`),
+    "    </ul>"
+  ].join("\n");
 }
 
 function xmlEscape(value) {
@@ -39,16 +91,19 @@ function parseHex(color) {
   const g = parseInt(hex.slice(2, 4), 16);
   const b = parseInt(hex.slice(4, 6), 16);
   const a = hex.length >= 8 ? hex.slice(6, 8) : null;
+
   return { r, g, b, a };
 }
 
 function toHex({ r, g, b, a }) {
   const ch = (n) => Math.max(0, Math.min(255, Math.round(n))).toString(16).padStart(2, "0");
+
   return `#${ch(r)}${ch(g)}${ch(b)}${a ?? ""}`;
 }
 
 function withAlpha(color, alphaHex) {
   const { r, g, b } = parseHex(color);
+
   return toHex({ r, g, b, a: alphaHex });
 }
 
@@ -61,27 +116,35 @@ function colorAttribute(name, colorOrOptions, fontType = 0) {
     typeof colorOrOptions === "string"
       ? { foreground: colorOrOptions, fontType }
       : { ...colorOrOptions };
-  const optionLines = [];
+  
+      const optionLines = [];
 
   if (options.foreground) {
     optionLines.push(xmlOption("FOREGROUND", stripHash(options.foreground), ""));
   }
+  
   if (options.background) {
     optionLines.push(xmlOption("BACKGROUND", stripHash(options.background), ""));
   }
+  
   if (options.effectColor) {
     optionLines.push(xmlOption("EFFECT_COLOR", stripHash(options.effectColor), ""));
   }
+  
   if (options.errorStripeColor) {
     optionLines.push(xmlOption("ERROR_STRIPE_COLOR", stripHash(options.errorStripeColor), ""));
   }
+  
   if (options.effectType) {
     const effectCode = EFFECT_TYPE_CODES[options.effectType];
+  
     if (effectCode === undefined) {
       throw new Error(`unknown effect type "${options.effectType}" for attribute "${name}"`);
     }
+  
     optionLines.push(xmlOption("EFFECT_TYPE", String(effectCode), ""));
   }
+  
   if (options.fontType) {
     optionLines.push(xmlOption("FONT_TYPE", String(options.fontType), ""));
   }
@@ -109,6 +172,7 @@ function themeFileName(theme, classic) {
 
 function themeProviderId(theme, classic) {
   const suffix = theme.slug === "noctis" ? "noctis" : theme.slug;
+
   return classic ? `${PLUGIN_ID}.${suffix}.classic` : `${PLUGIN_ID}.${suffix}`;
 }
 
@@ -126,11 +190,14 @@ function checkboxPaletteKeys(ui) {
     "Checkbox.Border.Disabled": ui.borderSubtle,
     "Checkbox.Foreground.Disabled": ui.textInactive
   };
+
   const keys = {};
+
   for (const [key, value] of Object.entries(palette)) {
     keys[key] = value;
     keys[`${key}.Dark`] = value;
   }
+  
   return keys;
 }
 
@@ -139,6 +206,7 @@ function scrollBarKeys(ui, editor) {
   const hoverThumb = `${ui.accent}88`;
   const transparentTrack = withAlpha(editor.background, "00");
   const keys = {};
+
   for (const prefix of ["ScrollBar", "ScrollBar.Transparent", "ScrollBar.Mac", "ScrollBar.Mac.Transparent"]) {
     keys[`${prefix}.thumbColor`] = thumb;
     keys[`${prefix}.thumbBorderColor`] = thumb;
@@ -147,6 +215,7 @@ function scrollBarKeys(ui, editor) {
     keys[`${prefix}.trackColor`] = transparentTrack;
     keys[`${prefix}.hoverTrackColor`] = transparentTrack;
   }
+
   return keys;
 }
 
@@ -741,7 +810,7 @@ function buildEditorSchemeXml(themeSource) {
   ].join("\n");
 }
 
-function buildPluginXml(themes) {
+function buildPluginXml(themes, changeNotesHtml) {
   const providers = [];
   for (const theme of themes) {
     providers.push(
@@ -771,10 +840,7 @@ function buildPluginXml(themes) {
     by Liviu Schera. Unofficial port — not affiliated with the original author.</p>
   ]]></description>
   <change-notes><![CDATA[
-    <ul>
-      <li>Initial release: 11 Noctis palettes as Islands and Classic UI themes.</li>
-      <li>Shared editor color schemes covering JS/TS, HTML/CSS, JSON, Markdown, diagnostics, diff, and terminal.</li>
-    </ul>
+${changeNotesHtml}
   ]]></change-notes>
   <extensions defaultExtensionNs="com.intellij">
 ${providers.join("\n")}
@@ -801,9 +867,18 @@ async function main() {
     console.log(`wrote ${classicPath}`);
   }
 
+  const [gradleProperties, changelogMarkdown] = await Promise.all([
+    readFile(join(ROOT, "gradle.properties"), "utf8"),
+    readFile(join(ROOT, "CHANGELOG.md"), "utf8")
+  ]);
+
+  const pluginVersion = gradleProperty(gradleProperties, "pluginVersion");
+  const changeNotesHtml = changelogHtml(changelogMarkdown, pluginVersion);
+
   const pluginXmlPath = join(ROOT, PLUGIN_XML_PATH);
-  await writeFile(pluginXmlPath, buildPluginXml(noctisThemes), "utf8");
-  console.log(`wrote ${pluginXmlPath}`);
+  
+  await writeFile(pluginXmlPath, buildPluginXml(noctisThemes, changeNotesHtml), "utf8");
+  console.log(`wrote ${pluginXmlPath} (change-notes ${pluginVersion})`);
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

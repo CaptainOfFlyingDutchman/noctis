@@ -1,6 +1,10 @@
 # Changelog
 
-## 1.0.0
+## [1.0.1]
+
+- Fix the SVG logo for the Plugin Marketplace listing.
+
+## [1.0.0]
 
 - Initial release of **Noctis**.
 - 11 upstream palettes (Lux, Hibernus, Lilac, Noctis, Azureus, Bordo, Obscuro, Sereno, Uva, Viola, Minimus).

@@ -1,8 +1,10 @@
+import org.jetbrains.changelog.Changelog
 import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 
 plugins {
     id("java")
     id("org.jetbrains.intellij.platform")
+    id("org.jetbrains.changelog")
 }
 
 group = providers.gradleProperty("pluginGroup").get()
@@ -20,11 +22,23 @@ dependencies {
     }
 }
 
+changelog {
+    version = providers.gradleProperty("pluginVersion")
+    groups.empty()
+}
+
 intellijPlatform {
     pluginConfiguration {
         id = providers.gradleProperty("pluginId")
         name = providers.gradleProperty("pluginName")
         version = providers.gradleProperty("pluginVersion")
+        changeNotes = provider {
+            val item = changelog.getOrNull(project.version.toString()) ?: changelog.getLatest()
+            changelog.renderItem(
+                item.withHeader(true).withEmptySections(false),
+                Changelog.OutputType.HTML,
+            )
+        }
         ideaVersion {
             sinceBuild = providers.gradleProperty("pluginSinceBuild")
             untilBuild = provider { null }
