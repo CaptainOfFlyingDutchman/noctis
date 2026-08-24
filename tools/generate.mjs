@@ -107,6 +107,27 @@ function withAlpha(color, alphaHex) {
   return toHex({ r, g, b, a: alphaHex });
 }
 
+function mix(colorA, colorB, amountTowardB) {
+  const a = parseHex(colorA);
+  const b = parseHex(colorB);
+
+  return toHex({
+    r: a.r + (b.r - a.r) * amountTowardB,
+    g: a.g + (b.g - a.g) * amountTowardB,
+    b: a.b + (b.b - a.b) * amountTowardB
+  });
+}
+
+/**
+ * Islands fades disabled chrome toward the surface (~28% of the enabled
+ * foreground remaining on dark, ~42% on light). Upstream Noctis often uses
+ * the same token for muted and inactive text, which makes popup actions
+ * look enabled when they are not.
+ */
+function disabledForeground(foreground, surface, dark) {
+  return mix(foreground, surface, dark ? 0.72 : 0.58);
+}
+
 function xmlOption(name, value, indent = "    ") {
   return `${indent}<option name="${xmlEscape(name)}" value="${xmlEscape(value)}" />`;
 }
@@ -176,7 +197,7 @@ function themeProviderId(theme, classic) {
   return classic ? `${PLUGIN_ID}.${suffix}.classic` : `${PLUGIN_ID}.${suffix}`;
 }
 
-function checkboxPaletteKeys(ui) {
+function checkboxPaletteKeys(ui, disabledFg) {
   const palette = {
     "Checkbox.Background.Default": ui.inputBackground,
     "Checkbox.Border.Default": ui.borderStrong,
@@ -188,7 +209,7 @@ function checkboxPaletteKeys(ui) {
     "Checkbox.Focus.Thin.Selected": ui.accentBright,
     "Checkbox.Background.Disabled": ui.widgetBackground,
     "Checkbox.Border.Disabled": ui.borderSubtle,
-    "Checkbox.Foreground.Disabled": ui.textInactive
+    "Checkbox.Foreground.Disabled": disabledFg
   };
 
   const keys = {};
@@ -245,6 +266,7 @@ function buildThemeJson(themeSource, { classic }) {
   const { name, dark, syntax, workbench } = themeSource;
   const { editor, ui } = workbench;
   const controlForeground = ui.textMuted;
+  const disabledFg = disabledForeground(editor.foreground, ui.popupBackground, dark);
   const controlSelectionBackground = ui.listSelection;
   const controlFocusBackground = ui.listFocus;
   const controlHoverBackground = ui.listHover;
@@ -281,7 +303,10 @@ function buildThemeJson(themeSource, { classic }) {
         selectionBackground: controlSelectionBackground,
         selectionForeground: ui.listSelectionForeground,
         inactiveBackground: "noctisSidebar",
-        disabledForeground: ui.textInactive,
+        disabledText: disabledFg,
+        disabledForeground: disabledFg,
+        inactiveForeground: disabledFg,
+        acceleratorForeground: ui.textMuted,
         infoForeground: ui.description
       },
       "ActionButton.hoverBackground": controlHoverBackground,
@@ -302,7 +327,7 @@ function buildThemeJson(themeSource, { classic }) {
       "Button.endBorderColor": ui.borderStrong,
       "Button.foreground": editor.foreground,
       "Button.focusedBorderColor": ui.accent,
-      "Button.disabledText": ui.textInactive,
+      "Button.disabledText": disabledFg,
       "Button.default.startBackground": ui.buttonBackground,
       "Button.default.endBackground": ui.buttonBackground,
       "Button.default.startBorderColor": ui.buttonBackground,
@@ -312,7 +337,7 @@ function buildThemeJson(themeSource, { classic }) {
       "CheckBox.background": editor.background,
       "CheckBox.foreground": editor.foreground,
       "CheckBox.focusColor": ui.accent,
-      ...checkboxPaletteKeys(ui),
+      ...checkboxPaletteKeys(ui, disabledFg),
       "ComboBox.background": ui.inputBackground,
       "ComboBox.foreground": ui.inputForeground,
       "ComboBox.nonEditableBackground": ui.widgetBackground,
@@ -370,13 +395,13 @@ function buildThemeJson(themeSource, { classic }) {
       "Focus.color": ui.accent,
       "Label.foreground": editor.foreground,
       "Label.infoForeground": ui.description,
-      "Label.disabledForeground": ui.textInactive,
+      "Label.disabledForeground": disabledFg,
       "Link.activeForeground": ui.accentBright,
       "Link.hoverForeground": ui.accentBright,
       "Link.pressedForeground": ui.accent,
       "Link.visitedForeground": ui.accent,
       "List.background": ui.sideBarBackground,
-      "List.foreground": controlForeground,
+      "List.foreground": editor.foreground,
       "List.focusBackground": controlFocusBackground,
       "List.focusForeground": editor.foreground,
       "List.hoverBackground": controlHoverBackground,
@@ -393,12 +418,16 @@ function buildThemeJson(themeSource, { classic }) {
       "MainToolbar.Dropdown.hoverBackground": controlHoverBackground,
       "MainToolbar.Icon.hoverBackground": controlHoverBackground,
       "Menu.background": ui.popupBackground,
-      "Menu.foreground": ui.textMuted,
+      "Menu.foreground": editor.foreground,
+      "Menu.disabledForeground": disabledFg,
+      "Menu.acceleratorForeground": ui.textMuted,
       "Menu.borderColor": ui.borderSubtle,
       "Menu.selectionBackground": controlHoverBackground,
       "Menu.selectionForeground": ui.accent,
       "MenuItem.background": ui.popupBackground,
-      "MenuItem.foreground": ui.textMuted,
+      "MenuItem.foreground": editor.foreground,
+      "MenuItem.disabledForeground": disabledFg,
+      "MenuItem.acceleratorForeground": ui.textMuted,
       "MenuItem.selectionBackground": controlHoverBackground,
       "MenuItem.selectionForeground": ui.accent,
       "NavBar.background": editor.background,
@@ -424,8 +453,11 @@ function buildThemeJson(themeSource, { classic }) {
       "Popup.Header.activeBackground": ui.sideBarHeader,
       "Popup.Header.inactiveBackground": ui.sideBarBackground,
       "Popup.separatorColor": ui.sideBarHeader,
+      "Popup.foreground": editor.foreground,
+      "Popup.inactiveForeground": disabledFg,
       "PopupMenu.background": ui.popupBackground,
-      "PopupMenu.foreground": ui.textMuted,
+      "PopupMenu.foreground": editor.foreground,
+      "PopupMenu.disabledForeground": disabledFg,
       "ProgressBar.foreground": ui.accentBright,
       "ProgressBar.progressColor": ui.accentBright,
       "ProgressBar.indeterminateStartColor": ui.accent,
