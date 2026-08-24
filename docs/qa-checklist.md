@@ -25,6 +25,7 @@ Repeat for **Noctis Islands**, **Noctis Classic**, **Noctis Lux Islands**, **Noc
 - [ ] Git diff gutter colors
 - [ ] Terminal default + ANSI colors
 - [ ] Settings dialog and notification balloon
+- [ ] Git / editor context menus: disabled actions are clearly faded vs enabled
 
 ## Islands-only
 

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 1.0.2
+
+- Fade disabled popup and menu items toward the panel background so they no longer match enabled actions (same contrast treatment as Islands).
+
 ## 1.0.1
 
 - Fix the SVG logo for the Plugin Marketplace listing.
