@@ -26,6 +26,8 @@ Repeat for **Noctis Islands**, **Noctis Classic**, **Noctis Lux Islands**, **Noc
 - [ ] Terminal default + ANSI colors
 - [ ] Settings dialog and notification balloon
 - [ ] Git / editor context menus: disabled actions are clearly faded vs enabled
+- [ ] Settings → Appearance → Noctis: "Italic function names and calls" is off by default; Apply/OK italicizes functions in `preview.ts`; Cancel leaves them unchanged
+- [ ] Find Action (⌘⇧A): search "italic" — one "Italic function names and calls" row with an ON/OFF toggle; flipping it applies immediately
 
 ## Islands-only
 

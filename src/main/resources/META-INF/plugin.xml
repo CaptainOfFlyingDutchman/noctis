@@ -4,6 +4,7 @@
   <name>Noctis</name>
   <vendor url="https://github.com/CaptainOfFlyingDutchman">Manvendra Singh</vendor>
   <depends>com.intellij.modules.platform</depends>
+  <depends>com.intellij.modules.lang</depends>
   <description><![CDATA[
     <p><b>Noctis</b> is a collection of light and dark themes with a well-balanced blend of
     warm and cold medium-contrast colors, ported from the VS Code theme of the same name.</p>
@@ -16,12 +17,12 @@
     <p>Ported from <a href="https://github.com/liviuschera/noctis">liviuschera/noctis</a> (MIT)
     by Liviu Schera. Unofficial port — not affiliated with the original author.</p>
   ]]></description>
-  <change-notes><![CDATA[
-    <ul>
-      <li>Fix the SVG logo for the Plugin Marketplace listing.</li>
-    </ul>
-  ]]></change-notes>
   <extensions defaultExtensionNs="com.intellij">
+    <applicationConfigurable
+      parentId="appearance"
+      id="com.manvendrask.noctis.settings"
+      displayName="Noctis"
+      instance="com.manvendrask.noctis.NoctisConfigurable"/>
     <themeProvider id="com.manvendrask.noctis.jetbrains.lux" path="/themes/lux.theme.json" />
     <themeProvider id="com.manvendrask.noctis.jetbrains.lux.classic" path="/themes/luxClassic.theme.json" />
     <themeProvider id="com.manvendrask.noctis.jetbrains.hibernus" path="/themes/hibernus.theme.json" />
@@ -45,4 +46,18 @@
     <themeProvider id="com.manvendrask.noctis.jetbrains.minimus" path="/themes/minimus.theme.json" />
     <themeProvider id="com.manvendrask.noctis.jetbrains.minimus.classic" path="/themes/minimusClassic.theme.json" />
   </extensions>
+  <applicationListeners>
+    <listener class="com.manvendrask.noctis.NoctisThemeSync"
+              topic="com.intellij.ide.AppLifecycleListener"/>
+    <listener class="com.manvendrask.noctis.NoctisThemeSync"
+              topic="com.intellij.openapi.editor.colors.EditorColorsListener"/>
+  </applicationListeners>
+  <actions>
+    <action id="com.manvendrask.noctis.ToggleItalicFunctionNames"
+            class="com.manvendrask.noctis.ToggleItalicFunctionNamesAction"
+            text="Italic function names and calls"
+            description="Applies to function names in the editor, including TypeScript and JavaScript.">
+      <add-to-group group-id="Other.KeymapGroup"/>
+    </action>
+  </actions>
 </idea-plugin>

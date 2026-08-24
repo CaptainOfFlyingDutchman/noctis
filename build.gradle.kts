@@ -28,6 +28,7 @@ changelog {
 }
 
 intellijPlatform {
+    buildSearchableOptions = false
     pluginConfiguration {
         id = providers.gradleProperty("pluginId")
         name = providers.gradleProperty("pluginName")

@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { noctisThemes, upstream } from "./palette.mjs";
@@ -22,59 +22,6 @@ const EFFECT_TYPE_CODES = {
 
 function stripHash(color) {
   return String(color).replace(/^#/, "").toLowerCase();
-}
-
-function gradleProperty(contents, key) {
-  const match = contents.match(new RegExp(`^${key}\\s*=\\s*(.+)$`, "m"));
-  
-  
-  if (!match) {
-    throw new Error(`missing ${key} in gradle.properties`);
-  }
-  
-  return match[1].trim();
-}
-
-function changelogSection(markdown, version) {
-  const escaped = version.replaceAll(".", "\\.");
-  const heading = new RegExp(`^##\\s+\\[?${escaped}\\]?\\b.*$`, "m");
-  const match = heading.exec(markdown);
-  
-  if (!match) {
-    return null;
-  }
-  
-  const start = match.index + match[0].length;
-  const rest = markdown.slice(start);
-  const next = rest.search(/^##\s+/m);
-  
-  return rest.slice(0, next === -1 ? undefined : next).trim();
-}
-
-function inlineMarkdown(text) {
-  return xmlEscape(text)
-    .replaceAll(/\*\*(.+?)\*\*/g, "<b>$1</b>")
-    .replaceAll(/`(.+?)`/g, "<code>$1</code>");
-}
-
-function changelogHtml(markdown, version) {
-  const section = changelogSection(markdown, version);
-  
-  if (!section) {
-    throw new Error(`CHANGELOG.md has no ## [${version}] section`);
-  }
-  
-  const items = [...section.matchAll(/^[-*]\s+(.+)$/gm)].map((item) => item[1].trim());
-  
-  if (items.length === 0) {
-    throw new Error(`CHANGELOG.md section ${version} has no list items`);
-  }
-  
-  return [
-    "    <ul>",
-    ...items.map((item) => `      <li>${inlineMarkdown(item)}</li>`),
-    "    </ul>"
-  ].join("\n");
 }
 
 function xmlEscape(value) {
@@ -842,7 +789,7 @@ function buildEditorSchemeXml(themeSource) {
   ].join("\n");
 }
 
-function buildPluginXml(themes, changeNotesHtml) {
+function buildPluginXml(themes) {
   const providers = [];
   for (const theme of themes) {
     providers.push(
@@ -859,6 +806,7 @@ function buildPluginXml(themes, changeNotesHtml) {
   <name>${PLUGIN_NAME}</name>
   <vendor url="${xmlEscape(PLUGIN_VENDOR_URL)}">${xmlEscape(PLUGIN_VENDOR)}</vendor>
   <depends>com.intellij.modules.platform</depends>
+  <depends>com.intellij.modules.lang</depends>
   <description><![CDATA[
     <p><b>Noctis</b> is a collection of light and dark themes with a well-balanced blend of
     warm and cold medium-contrast colors, ported from the VS Code theme of the same name.</p>
@@ -871,12 +819,28 @@ function buildPluginXml(themes, changeNotesHtml) {
     <p>Ported from <a href="https://github.com/liviuschera/noctis">liviuschera/noctis</a> (MIT)
     by Liviu Schera. Unofficial port — not affiliated with the original author.</p>
   ]]></description>
-  <change-notes><![CDATA[
-${changeNotesHtml}
-  ]]></change-notes>
   <extensions defaultExtensionNs="com.intellij">
+    <applicationConfigurable
+      parentId="appearance"
+      id="com.manvendrask.noctis.settings"
+      displayName="Noctis"
+      instance="com.manvendrask.noctis.NoctisConfigurable"/>
 ${providers.join("\n")}
   </extensions>
+  <applicationListeners>
+    <listener class="com.manvendrask.noctis.NoctisThemeSync"
+              topic="com.intellij.ide.AppLifecycleListener"/>
+    <listener class="com.manvendrask.noctis.NoctisThemeSync"
+              topic="com.intellij.openapi.editor.colors.EditorColorsListener"/>
+  </applicationListeners>
+  <actions>
+    <action id="com.manvendrask.noctis.ToggleItalicFunctionNames"
+            class="com.manvendrask.noctis.ToggleItalicFunctionNamesAction"
+            text="Italic function names and calls"
+            description="Applies to function names in the editor, including TypeScript and JavaScript.">
+      <add-to-group group-id="Other.KeymapGroup"/>
+    </action>
+  </actions>
 </idea-plugin>
 `;
 }
@@ -899,18 +863,10 @@ async function main() {
     console.log(`wrote ${classicPath}`);
   }
 
-  const [gradleProperties, changelogMarkdown] = await Promise.all([
-    readFile(join(ROOT, "gradle.properties"), "utf8"),
-    readFile(join(ROOT, "CHANGELOG.md"), "utf8")
-  ]);
-
-  const pluginVersion = gradleProperty(gradleProperties, "pluginVersion");
-  const changeNotesHtml = changelogHtml(changelogMarkdown, pluginVersion);
-
   const pluginXmlPath = join(ROOT, PLUGIN_XML_PATH);
-  
-  await writeFile(pluginXmlPath, buildPluginXml(noctisThemes, changeNotesHtml), "utf8");
-  console.log(`wrote ${pluginXmlPath} (change-notes ${pluginVersion})`);
+
+  await writeFile(pluginXmlPath, buildPluginXml(noctisThemes), "utf8");
+  console.log(`wrote ${pluginXmlPath}`);
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 2.0.0
+
+- Add a Noctis setting (off by default) to italicize function names and calls, toggleable from Find Action.
 
 ## 1.0.2
 

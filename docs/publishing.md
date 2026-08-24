@@ -45,4 +45,4 @@ Optional plugin signing (avoids an install warning) is documented at [Plugin Sig
 3. Run `./gradlew buildPlugin`. That patches `<change-notes>` in the packaged `plugin.xml` from `CHANGELOG.md`.
 4. Install the ZIP from `build/distributions/` locally, then upload it yourself from the Marketplace (or `./gradlew publishPlugin` later).
 
-Do not edit `<change-notes>` in `plugin.xml` by hand. `node tools/generate.mjs` also copies the matching changelog section into the source `plugin.xml`.
+Do not edit `<change-notes>` in `plugin.xml` by hand. `./gradlew buildPlugin` injects them via the `patchPluginXml` task from `CHANGELOG.md`.
