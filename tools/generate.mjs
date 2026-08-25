@@ -75,6 +75,34 @@ function disabledForeground(foreground, surface, dark) {
   return mix(foreground, surface, dark ? 0.72 : 0.58);
 }
 
+/**
+ * JetBrains diffs use BACKGROUND as the word-level ("Important") highlight and
+ * FOREGROUND as the whole-line ("Ignored") wash. Missing FOREGROUND makes the
+ * IDE mix BACKGROUND 60% toward the editor surface, so a saturated gutter
+ * color becomes an opaque slab that hides Noctis orange identifiers.
+ * Modified uses the accent (cyan/blue), not the gold gutter tick.
+ */
+function diffLayer(editorBackground, accent, stripe, dark) {
+  return {
+    foreground: mix(editorBackground, accent, dark ? 0.1 : 0.08),
+    background: mix(editorBackground, accent, dark ? 0.22 : 0.16),
+    errorStripeColor: stripe
+  };
+}
+
+function diffHighlights(themeSource) {
+  const { dark, workbench } = themeSource;
+  const { editor, ui, vcs } = workbench;
+  const bg = editor.background;
+
+  return {
+    inserted: diffLayer(bg, vcs.added, vcs.added, dark),
+    deleted: diffLayer(bg, vcs.deleted, vcs.deleted, dark),
+    modified: diffLayer(bg, ui.accent, ui.accent, dark),
+    conflict: diffLayer(bg, vcs.conflicted, vcs.conflicted, dark)
+  };
+}
+
 function xmlOption(name, value, indent = "    ") {
   return `${indent}<option name="${xmlEscape(name)}" value="${xmlEscape(value)}" />`;
 }
@@ -212,6 +240,7 @@ function islandsKeys(themeSource) {
 function buildThemeJson(themeSource, { classic }) {
   const { name, dark, syntax, workbench } = themeSource;
   const { editor, ui } = workbench;
+  const diffs = diffHighlights(themeSource);
   const controlForeground = ui.textMuted;
   const disabledFg = disabledForeground(editor.foreground, ui.popupBackground, dark);
   const controlSelectionBackground = ui.listSelection;
@@ -320,6 +349,10 @@ function buildThemeJson(themeSource, { classic }) {
       "DefaultTabs.underlineColor": ui.accentBright,
       "DefaultTabs.unselectedBackground": ui.tabInactiveBackground,
       "DefaultTabs.unselectedForeground": ui.textMuted,
+      "Diff.Conflict": diffs.conflict.foreground,
+      "Diff.Deleted": diffs.deleted.foreground,
+      "Diff.Inserted": diffs.inserted.foreground,
+      "Diff.Modified": diffs.modified.foreground,
       "EditorPane.background": editor.background,
       "EditorPane.foreground": editor.foreground,
       "EditorTextField.background": ui.inputBackground,
@@ -541,6 +574,7 @@ function buildThemeJson(themeSource, { classic }) {
 function buildEditorSchemeXml(themeSource) {
   const { name, dark, syntax, workbench } = themeSource;
   const { editor, ui, vcs, terminal } = workbench;
+  const diffs = diffHighlights(themeSource);
   const parent = dark ? "Darcula" : "Default";
   const colors = [
     ["CARET_COLOR", stripHash(editor.cursor)],
@@ -727,9 +761,10 @@ function buildEditorSchemeXml(themeSource) {
       errorStripeColor: ui.hint,
       effectType: "BOLD_DOTTED_LINE"
     }),
-    colorAttribute("DIFF_INSERTED", { background: vcs.addedLine }),
-    colorAttribute("DIFF_MODIFIED", { background: vcs.modifiedLine }),
-    colorAttribute("DIFF_DELETED", { background: vcs.deletedLine }),
+    colorAttribute("DIFF_INSERTED", diffs.inserted),
+    colorAttribute("DIFF_MODIFIED", diffs.modified),
+    colorAttribute("DIFF_DELETED", diffs.deleted),
+    colorAttribute("DIFF_CONFLICT", diffs.conflict),
     colorAttribute("NOT_USED_ELEMENT_ATTRIBUTES", { foreground: ui.textInactive }),
     colorAttribute("DEPRECATED_ATTRIBUTES", {
       foreground: ui.textInactive,

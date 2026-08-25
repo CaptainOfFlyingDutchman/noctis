@@ -468,17 +468,30 @@
     </option>
     <option name="DIFF_INSERTED">
       <value>
-        <option name="BACKGROUND" value="72c09f25" />
+        <option name="FOREGROUND" value="1f3338" />
+        <option name="BACKGROUND" value="233f3f" />
+        <option name="ERROR_STRIPE_COLOR" value="3f8d6c" />
       </value>
     </option>
     <option name="DIFF_MODIFIED">
       <value>
-        <option name="BACKGROUND" value="dfc09f" />
+        <option name="FOREGROUND" value="213440" />
+        <option name="BACKGROUND" value="294151" />
+        <option name="ERROR_STRIPE_COLOR" value="5998c0" />
       </value>
     </option>
     <option name="DIFF_DELETED">
       <value>
-        <option name="BACKGROUND" value="c3745530" />
+        <option name="FOREGROUND" value="2b2f34" />
+        <option name="BACKGROUND" value="3e3636" />
+        <option name="ERROR_STRIPE_COLOR" value="b96346" />
+      </value>
+    </option>
+    <option name="DIFF_CONFLICT">
+      <value>
+        <option name="FOREGROUND" value="2f383d" />
+        <option name="BACKGROUND" value="464a4a" />
+        <option name="ERROR_STRIPE_COLOR" value="dfc09f" />
       </value>
     </option>
     <option name="NOT_USED_ELEMENT_ATTRIBUTES">
