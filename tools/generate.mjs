@@ -75,6 +75,101 @@ function disabledForeground(foreground, surface, dark) {
   return mix(foreground, surface, dark ? 0.72 : 0.58);
 }
 
+function opaqueHex(color) {
+  const { r, g, b } = parseHex(color);
+
+  return toHex({ r, g, b });
+}
+
+function relativeLuminance(color) {
+  const { r, g, b } = parseHex(color);
+  const linear = (channel) => {
+    const srgb = channel / 255;
+
+    return srgb <= 0.03928 ? srgb / 12.92 : ((srgb + 0.055) / 1.055) ** 2.4;
+  };
+
+  return 0.2126 * linear(r) + 0.7152 * linear(g) + 0.0722 * linear(b);
+}
+
+function contrastRatio(colorA, colorB) {
+  const a = relativeLuminance(colorA);
+  const b = relativeLuminance(colorB);
+  const lighter = Math.max(a, b);
+  const darker = Math.min(a, b);
+
+  return (lighter + 0.05) / (darker + 0.05);
+}
+
+function darkenUntil(color, toward, against, minContrast) {
+  const start = opaqueHex(color);
+  const floor = opaqueHex(toward);
+
+  if (contrastRatio(against, start) >= minContrast) {
+    return start;
+  }
+
+  let low = 0;
+  let high = 1;
+  let best = floor;
+
+  for (let i = 0; i < 12; i++) {
+    const mid = (low + high) / 2;
+    const candidate = mix(start, floor, mid);
+
+    if (contrastRatio(against, candidate) >= minContrast) {
+      best = candidate;
+      high = mid;
+    } else {
+      low = mid;
+    }
+  }
+
+  return contrastRatio(against, best) >= minContrast ? best : floor;
+}
+
+/**
+ * Presentation Assistant chips sit on the editor. JetBrains Bright uses white
+ * text on a dark fill; Noctis `"*".foreground` otherwise paints editor ink
+ * onto that fill (illegible on light palettes, muddy on dark).
+ *
+ * Keep Bright and Pale identical so either setting stays white-on-chip.
+ * Chip is a mid-dark theme color (never the bright accent, never a pastel
+ * panel). Darken toward terminal black until white still clears 4.5:1 for
+ * the small keymap label.
+ */
+function presentationAssistantKeys(themeSource) {
+  const { dark, workbench } = themeSource;
+  const { ui, terminal } = workbench;
+  const white = "#ffffff";
+  const preferredChip = dark ? ui.listSelection : ui.buttonBackground;
+  const chip = darkenUntil(preferredChip, terminal.black, white, 4.5);
+  const title =
+    contrastRatio(white, chip) >= 3 ? white : opaqueHex(ui.buttonForeground);
+  let keymapLabel = mix(title, chip, 0.22);
+
+  if (contrastRatio(keymapLabel, chip) < 4.5) {
+    keymapLabel = title;
+  }
+
+  const variant = {
+    "Popup.foreground": title,
+    PopupBackground: chip,
+    "Popup.border": chip,
+    keymapLabel
+  };
+
+  const keys = {};
+
+  for (const tone of ["Bright", "Pale"]) {
+    for (const [suffix, value] of Object.entries(variant)) {
+      keys[`PresentationAssistant.${tone}.${suffix}`] = value;
+    }
+  }
+
+  return keys;
+}
+
 /**
  * JetBrains diffs use BACKGROUND as the word-level ("Important") highlight and
  * FOREGROUND as the whole-line ("Ignored") wash. Missing FOREGROUND makes the
@@ -438,6 +533,7 @@ function buildThemeJson(themeSource, { classic }) {
       "PopupMenu.background": ui.popupBackground,
       "PopupMenu.foreground": editor.foreground,
       "PopupMenu.disabledForeground": disabledFg,
+      ...presentationAssistantKeys(themeSource),
       "ProgressBar.foreground": ui.accentBright,
       "ProgressBar.progressColor": ui.accentBright,
       "ProgressBar.indeterminateStartColor": ui.accent,

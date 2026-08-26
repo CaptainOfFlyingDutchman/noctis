@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+## 2.2.0
+
+- Fix the Presentation Assistant chips readability and legibility.
+
 ## 2.1.0
 
 - Soften Git diff line and word highlights (cyan modified, green inserted, red deleted) so syntax stays readable over the wash.
