@@ -81,6 +81,30 @@ function opaqueHex(color) {
   return toHex({ r, g, b });
 }
 
+function isFullyTransparent(color) {
+  const { a } = parseHex(color);
+
+  return a != null && a.toLowerCase() === "00";
+}
+
+/** Inner tool-window edges (dividers, fields, cards). Never fully transparent. */
+function innerBorderColor(ui) {
+  if (isFullyTransparent(ui.borderSubtle)) {
+    return opaqueHex(ui.borderStrong);
+  }
+
+  return opaqueHex(ui.borderSubtle);
+}
+
+/** Light nested surfaces (commit box, inputs, notification cards) lift toward white. */
+function nestedSurfaceBackground(editor, ui, dark) {
+  if (dark) {
+    return ui.inputBackground;
+  }
+
+  return mix(editor.background, "#ffffff", 0.7);
+}
+
 function relativeLuminance(color) {
   const { r, g, b } = parseHex(color);
   const linear = (channel) => {
@@ -267,9 +291,9 @@ function themeProviderId(theme, classic) {
   return classic ? `${PLUGIN_ID}.${suffix}.classic` : `${PLUGIN_ID}.${suffix}`;
 }
 
-function checkboxPaletteKeys(ui, disabledFg) {
+function checkboxPaletteKeys(ui, disabledFg, innerBorder, fieldBackground) {
   const palette = {
-    "Checkbox.Background.Default": ui.inputBackground,
+    "Checkbox.Background.Default": fieldBackground,
     "Checkbox.Border.Default": ui.borderStrong,
     "Checkbox.Background.Selected": ui.accent,
     "Checkbox.Border.Selected": ui.accent,
@@ -278,7 +302,7 @@ function checkboxPaletteKeys(ui, disabledFg) {
     "Checkbox.Focus.Thin.Default": ui.accentBright,
     "Checkbox.Focus.Thin.Selected": ui.accentBright,
     "Checkbox.Background.Disabled": ui.widgetBackground,
-    "Checkbox.Border.Disabled": ui.borderSubtle,
+    "Checkbox.Border.Disabled": innerBorder,
     "Checkbox.Foreground.Disabled": disabledFg
   };
 
@@ -317,7 +341,6 @@ function islandsKeys(themeSource) {
 
   return {
     "ToolWindow.background": toolWindowBg,
-    "ToolWindow.background": toolWindowBg,
     "ToolWindow.Header.background": ui.sideBarHeader,
     "ToolWindow.Header.inactiveBackground": ui.sideBarBackground,
     "Island.borderColor": toolWindowBg,
@@ -342,6 +365,9 @@ function buildThemeJson(themeSource, { classic }) {
   const controlFocusBackground = ui.listFocus;
   const controlHoverBackground = ui.listHover;
   const toolWindowSelectionBackground = ui.listSelection;
+  const innerBorder = innerBorderColor(ui);
+  const fieldBackground = nestedSurfaceBackground(editor, ui, dark);
+  const notificationSurface = dark ? ui.widgetBackground : fieldBackground;
   const displayName = classic ? `${name} Classic` : `${name} Islands`;
 
   const theme = {
@@ -390,7 +416,7 @@ function buildThemeJson(themeSource, { classic }) {
       "Banner.warningBorderColor": ui.warning,
       "Banner.errorBackground": `${ui.error}22`,
       "Banner.errorBorderColor": ui.error,
-      "Borders.color": ui.borderSubtle,
+      "Borders.color": innerBorder,
       "Borders.ContrastBorderColor": ui.borderStrong,
       "Button.startBackground": editor.background,
       "Button.endBackground": editor.background,
@@ -405,18 +431,18 @@ function buildThemeJson(themeSource, { classic }) {
       "Button.default.endBorderColor": ui.buttonBackground,
       "Button.default.foreground": ui.buttonForeground,
       "Button.default.focusedBorderColor": ui.buttonHover,
-      "CheckBox.background": editor.background,
+      "CheckBox.background": fieldBackground,
       "CheckBox.foreground": editor.foreground,
       "CheckBox.focusColor": ui.accent,
-      ...checkboxPaletteKeys(ui, disabledFg),
-      "ComboBox.background": ui.inputBackground,
+      ...checkboxPaletteKeys(ui, disabledFg, innerBorder, fieldBackground),
+      "ComboBox.background": fieldBackground,
       "ComboBox.foreground": ui.inputForeground,
       "ComboBox.nonEditableBackground": ui.widgetBackground,
       "ComboBox.selectionBackground": controlSelectionBackground,
-      "ComboBox.ArrowButton.background": ui.inputBackground,
+      "ComboBox.ArrowButton.background": fieldBackground,
       "ComboBox.ArrowButton.nonEditableBackground": ui.widgetBackground,
       "ComboBox.ArrowButton.iconColor": ui.accent,
-      "Component.borderColor": ui.borderSubtle,
+      "Component.borderColor": innerBorder,
       "Component.errorFocusColor": ui.error,
       "Component.focusColor": `${ui.accent}55`,
       "Component.focusedBorderColor": ui.accent,
@@ -450,10 +476,10 @@ function buildThemeJson(themeSource, { classic }) {
       "Diff.Modified": diffs.modified.foreground,
       "EditorPane.background": editor.background,
       "EditorPane.foreground": editor.foreground,
-      "EditorTextField.background": ui.inputBackground,
-      "EditorTextField.borderColor": ui.borderSubtle,
+      "EditorTextField.background": fieldBackground,
+      "EditorTextField.borderColor": innerBorder,
       "EditorTextField.foreground": editor.foreground,
-      "EditorTextField.inactiveBackground": ui.inputBackground,
+      "EditorTextField.inactiveBackground": fieldBackground,
       "EditorTabs.background": ui.editorHeaderBackground,
       "EditorTabs.borderColor": ui.borderStrong,
       "EditorTabs.hoverBackground": ui.tabHoverBackground,
@@ -496,7 +522,7 @@ function buildThemeJson(themeSource, { classic }) {
       "Menu.foreground": editor.foreground,
       "Menu.disabledForeground": disabledFg,
       "Menu.acceleratorForeground": ui.textMuted,
-      "Menu.borderColor": ui.borderSubtle,
+      "Menu.borderColor": innerBorder,
       "Menu.selectionBackground": controlHoverBackground,
       "Menu.selectionForeground": ui.accent,
       "MenuItem.background": ui.popupBackground,
@@ -513,14 +539,18 @@ function buildThemeJson(themeSource, { classic }) {
       "NavBar.selectedForeground": editor.foreground,
       "Notification.ToolWindow.errorForeground": ui.error,
       "Notification.ToolWindow.warningForeground": ui.warningMuted,
-      "Notification.background": ui.widgetBackground,
-      "Notification.borderColor": ui.borderSubtle,
+      "Notification.background": notificationSurface,
+      "Notification.borderColor": innerBorder,
       "Notification.errorBackground": `${ui.error}22`,
       "Notification.foreground": editor.foreground,
       "Notification.linkForeground": ui.accentBright,
       "Notification.warningBackground": `${ui.warning}22`,
+      "NotificationsToolwindow.newNotification.background": notificationSurface,
+      "NotificationsToolwindow.newNotification.hoverBackground": controlHoverBackground,
+      "NotificationsToolwindow.Notification.hoverBackground": controlHoverBackground,
+      "OnePixelDivider.background": innerBorder,
       "Panel.background": editor.background,
-      "PasswordField.background": ui.inputBackground,
+      "PasswordField.background": fieldBackground,
       "PasswordField.caretForeground": editor.cursor,
       "PasswordField.foreground": ui.inputForeground,
       "Popup.borderColor": ui.borderStrong,
@@ -538,28 +568,28 @@ function buildThemeJson(themeSource, { classic }) {
       "ProgressBar.progressColor": ui.accentBright,
       "ProgressBar.indeterminateStartColor": ui.accent,
       "ProgressBar.indeterminateEndColor": ui.accentBright,
-      "ProgressBar.trackColor": ui.borderSubtle,
+      "ProgressBar.trackColor": innerBorder,
       "ProgressBar.passedColor": ui.success,
       "ProgressBar.failedColor": ui.error,
       ...scrollBarKeys(ui, editor),
-      "SearchField.background": ui.inputBackground,
+      "SearchField.background": fieldBackground,
       "SearchField.foreground": ui.inputForeground,
       "SearchField.infoForeground": ui.inputPlaceholder,
       "SearchEverywhere.Advertiser.foreground": ui.textMuted,
       "SearchEverywhere.Header.background": ui.sideBarHeader,
-      "SearchEverywhere.SearchField.background": ui.inputBackground,
+      "SearchEverywhere.SearchField.background": fieldBackground,
       "SearchEverywhere.SearchField.foreground": ui.inputForeground,
-      "SearchEverywhere.SearchField.borderColor": ui.borderSubtle,
+      "SearchEverywhere.SearchField.borderColor": innerBorder,
       "SearchEverywhere.Tab.selectedBackground": controlSelectionBackground,
       "SearchEverywhere.Tab.selectedForeground": editor.foreground,
-      "Separator.foreground": ui.sideBarHeader,
+      "Separator.foreground": innerBorder,
       "SidePanel.background": ui.sideBarBackground,
       "SidePanel.foreground": controlForeground,
       "SpeedSearch.background": ui.popupBackground,
       "SpeedSearch.foreground": editor.foreground,
       "SpeedSearch.borderColor": ui.accent,
       "SpeedSearch.errorForeground": ui.error,
-      "Spinner.background": ui.inputBackground,
+      "Spinner.background": fieldBackground,
       "Spinner.foreground": ui.inputForeground,
       "StatusBar.Widget.HoverBackground": controlHoverBackground,
       "StatusBar.Widget.borderColor": ui.borderTransparent,
@@ -573,18 +603,18 @@ function buildThemeJson(themeSource, { classic }) {
       "TabbedPane.focusColor": controlFocusBackground,
       "Table.background": ui.sideBarBackground,
       "Table.foreground": controlForeground,
-      "Table.gridColor": ui.sideBarHeader,
+      "Table.gridColor": innerBorder,
       "Table.hoverBackground": controlHoverBackground,
       "Table.selectionBackground": controlSelectionBackground,
       "Table.selectionForeground": ui.listSelectionForeground,
       "Table.selectionInactiveBackground": ui.listInactiveSelection,
-      "TextPane.background": ui.inputBackground,
+      "TextPane.background": fieldBackground,
       "TextPane.caretForeground": editor.cursor,
       "TextPane.foreground": editor.foreground,
-      "TextArea.background": ui.inputBackground,
+      "TextArea.background": fieldBackground,
       "TextArea.caretForeground": editor.cursor,
       "TextArea.foreground": editor.foreground,
-      "TextField.background": ui.inputBackground,
+      "TextField.background": fieldBackground,
       "TextField.caretForeground": editor.cursor,
       "TextField.foreground": editor.foreground,
       "TextField.inactiveBackground": ui.widgetBackground,
@@ -594,12 +624,13 @@ function buildThemeJson(themeSource, { classic }) {
       "TitlePane.infoForeground": ui.textMuted,
       "ToolTip.background": ui.popupBackground,
       "ToolTip.foreground": editor.foreground,
-      "ToolTip.borderColor": ui.borderSubtle,
+      "ToolTip.borderColor": innerBorder,
       "ToolWindow.Button.foreground": ui.textMuted,
       "ToolWindow.Button.hoverBackground": controlHoverBackground,
       "ToolWindow.Button.selectedBackground": toolWindowSelectionBackground,
       "ToolWindow.Button.selectedForeground": ui.accent,
       "ToolWindow.Header.background": ui.sideBarHeader,
+      "ToolWindow.Header.borderColor": innerBorder,
       "ToolWindow.Header.inactiveBackground": ui.sideBarBackground,
       "ToolWindow.HeaderTab.hoverBackground": controlHoverBackground,
       "ToolWindow.HeaderTab.inactiveForeground": ui.textMuted,

@@ -29,7 +29,27 @@ function pick(obj, key, fallback) {
   return obj[key] ?? fallback;
 }
 
+function stripHash(color) {
+  return String(color).replace(/^#/, "");
+}
+
+/** VS Code light palettes use fully transparent widget borders; JetBrains tool windows need an opaque edge. */
+function opaqueBorder(color, fallback) {
+  const hex = stripHash(color ?? "");
+  if (hex.length >= 8 && hex.slice(6, 8).toLowerCase() === "00") {
+    return fallback;
+  }
+
+  return color;
+}
+
 function extractWorkbench(c) {
+  const borderStrong = pick(c, "tab.border", pick(c, "editorGroup.border"));
+  const borderSubtle = opaqueBorder(
+    pick(c, "editorWidget.border", pick(c, "panel.border")),
+    borderStrong
+  );
+
   return {
     editor: {
       background: pick(c, "editor.background"),
@@ -59,8 +79,8 @@ function extractWorkbench(c) {
       textInactive: pick(c, "tab.inactiveForeground"),
       description: pick(c, "descriptionForeground"),
       borderTransparent: pick(c, "statusBar.border", pick(c, "activityBar.border")),
-      borderSubtle: pick(c, "editorWidget.border", pick(c, "panel.border")),
-      borderStrong: pick(c, "tab.border", pick(c, "editorGroup.border")),
+      borderSubtle,
+      borderStrong,
       sideBarBackground: pick(c, "sideBar.background"),
       sideBarHeader: pick(c, "sideBarSectionHeader.background"),
       statusBarBackground: pick(c, "statusBar.background"),
