@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 2.3.0
+
+- Restore inner tool-window structure on light themes (Lux, Hibernus, Lilac): opaque dividers, boxed commit/input fields, and notification cards.
+
 ## 2.2.0
 
 - Fix the Presentation Assistant chips readability and legibility.
