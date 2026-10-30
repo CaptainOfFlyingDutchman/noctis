@@ -222,6 +222,16 @@ function diffHighlights(themeSource) {
   };
 }
 
+/** Commit dialog / project view: green for added, accent (cyan) for modified — like default IDE light. */
+function vcsTreeFileStatusColors(workbench) {
+  const { ui, vcs } = workbench;
+
+  return {
+    added: vcs.added,
+    modified: ui.accent
+  };
+}
+
 function xmlOption(name, value, indent = "    ") {
   return `${indent}<option name="${xmlEscape(name)}" value="${xmlEscape(value)}" />`;
 }
@@ -359,6 +369,7 @@ function buildThemeJson(themeSource, { classic }) {
   const { name, dark, syntax, workbench } = themeSource;
   const { editor, ui } = workbench;
   const diffs = diffHighlights(themeSource);
+  const vcsFileStatus = vcsTreeFileStatusColors(workbench);
   const controlForeground = ui.textMuted;
   const disabledFg = disabledForeground(editor.foreground, ui.popupBackground, dark);
   const controlSelectionBackground = ui.listSelection;
@@ -485,7 +496,7 @@ function buildThemeJson(themeSource, { classic }) {
       "EditorTabs.hoverBackground": ui.tabHoverBackground,
       "EditorTabs.inactiveColoredFileBackground": ui.tabInactiveBackground,
       "EditorTabs.inactiveMaskColor": withAlpha(editor.background, "00"),
-      "EditorTabs.modifiedItemForeground": ui.success,
+      "EditorTabs.modifiedItemForeground": vcsFileStatus.modified,
       "EditorTabs.selectedBackground": ui.tabActiveBackground,
       "EditorTabs.selectedForeground": ui.accent,
       "EditorTabs.underlinedTabBackground": ui.tabActiveBackground,
@@ -647,7 +658,7 @@ function buildThemeJson(themeSource, { classic }) {
       "Tree.foreground": controlForeground,
       "Tree.hash": ui.sideBarHeader,
       "Tree.hoverBackground": controlHoverBackground,
-      "Tree.modifiedItemForeground": ui.successBright,
+      "Tree.modifiedItemForeground": vcsFileStatus.modified,
       "Tree.selectionBackground": controlSelectionBackground,
       "Tree.selectionForeground": ui.listSelectionForeground,
       "Tree.selectionInactiveBackground": ui.listInactiveSelection,
@@ -702,6 +713,7 @@ function buildEditorSchemeXml(themeSource) {
   const { name, dark, syntax, workbench } = themeSource;
   const { editor, ui, vcs, terminal } = workbench;
   const diffs = diffHighlights(themeSource);
+  const vcsFileStatus = vcsTreeFileStatusColors(workbench);
   const parent = dark ? "Darcula" : "Default";
   const colors = [
     ["CARET_COLOR", stripHash(editor.cursor)],
@@ -719,8 +731,8 @@ function buildEditorSchemeXml(themeSource) {
     ["ADDED_LINES_COLOR", stripHash(vcs.addedLine)],
     ["MODIFIED_LINES_COLOR", stripHash(vcs.modifiedLine)],
     ["DELETED_LINES_COLOR", stripHash(vcs.deletedLine)],
-    ["FILESTATUS_ADDED", stripHash(vcs.added)],
-    ["FILESTATUS_MODIFIED", stripHash(vcs.modified)],
+    ["FILESTATUS_ADDED", stripHash(vcsFileStatus.added)],
+    ["FILESTATUS_MODIFIED", stripHash(vcsFileStatus.modified)],
     ["FILESTATUS_DELETED", stripHash(vcs.deleted)],
     ["FILESTATUS_IGNORED", stripHash(vcs.ignored)],
     ["FILESTATUS_MERGED_WITH_CONFLICTS", stripHash(vcs.conflicted)],
