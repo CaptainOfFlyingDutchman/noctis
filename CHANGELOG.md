@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 2.4.0
+
+- Distinguish new vs changed files in the commit dialog and project trees: green for added, accent cyan for modified (aligned with default IDE light behavior).
 
 ## 2.3.0
 
